@@ -1,0 +1,14 @@
+.messages {
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+.message-sending-button-container {
+  width: 100%;
+  height: 100%;
+}
+.message-sending-button {
+  height: 100%;
+  width: 100%;
+}
