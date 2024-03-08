@@ -2,7 +2,7 @@ import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, V
 import axios from 'axios'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import API_URL from '../../API_CALL/api-url'
+import { API_URL } from '../../API_CALL/api-url'
 
 
 const Signup = () => {
@@ -95,7 +95,10 @@ const Signup = () => {
 
                 },
             }
-            const { data } = axios.post(API_URL + "/api/user", { name, email, password, picture }, config)
+            const { data } = await axios.post(API_URL + "/api/user", { name, email, password, pic: picture }, config)
+            console.log(data);
+
+
             toast({
                 title: "Registration Succesfull",
                 status: "success",
@@ -103,9 +106,11 @@ const Signup = () => {
                 isClosable: true,
                 position: "bottom"
             })
+
             localStorage.setItem("userInfo", JSON.stringify(data))
             setLoading(false)
             navigate("/chat")
+
         } catch (error) {
             toast({
                 title: "Error Occured",

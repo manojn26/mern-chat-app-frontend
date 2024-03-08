@@ -2,7 +2,7 @@ import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, V
 import axios from 'axios'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import API_URL from '../../API_CALL/api-url'
+import { API_URL } from '../../API_CALL/api-url'
 
 const Login = () => {
     const [email, setEmail] = useState()
@@ -46,7 +46,7 @@ const Login = () => {
                 status: "success",
                 duration: 5000,
                 isClosable: true,
-                position: "bottom"
+                position: "top-right"
             })
             localStorage.setItem("userInfo", JSON.stringify(data))
             setLoading(false)
@@ -93,6 +93,7 @@ const Login = () => {
                 style={{ marginTop: 15 }}
                 onClick={submitHandler}
                 variant="solid"
+                isLoading={loading}
             >
                 Login
             </Button>
@@ -102,7 +103,7 @@ const Login = () => {
                 width="100%"
                 style={{ marginTop: 15 }}
                 variant="solid"
-                isLoading={loading}
+
             >
                 Guest User Credentials
             </Button>

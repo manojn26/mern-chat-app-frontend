@@ -1,3 +1,5 @@
 const API_URL = "http://localhost:5000";
 
-export default API_URL;
+const BASE_APP_URL = "http://localhost:3000/";
+
+export { API_URL, BASE_APP_URL };
