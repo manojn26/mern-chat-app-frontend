@@ -29,7 +29,7 @@ import { API_URL } from "../../API_CALL/api-url";
 import ChatLoading from "../chat/ChatLoading";
 import UserListItem from "../chat/UserListItem";
 import { getSender } from "../../config/ChatLogics";
-import NotificationBadge from "react-notification-badge/lib/components/NotificationBadge";
+// import NotificationBadge from "react-notification-badge/lib/components/NotificationBadge";
 import { Effect } from "react-notification-badge";
 
 const SideDrawer = () => {
@@ -150,7 +150,7 @@ const SideDrawer = () => {
         <div>
           <Menu>
             <MenuButton p={1}>
-              <NotificationBadge count={notification.length} effect={Effect.SCALE} />
+              {/* <NotificationBadge count={notification.length} effect={Effect.SCALE} /> */}
               <BellIcon fontSize='2xl' m={1} />
             </MenuButton>
             <MenuList paddingLeft={2}>
