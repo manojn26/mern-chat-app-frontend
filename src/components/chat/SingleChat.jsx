@@ -9,6 +9,18 @@ import axios from "axios";
 import { API_URL } from "../../API_CALL/api-url";
 import "./SingleChat.css"
 import ScrollableChat from "./ScrollableChat";
+import { io } from "socket.io-client";
+// import animationData from "../../Animations/Typing.json"
+
+
+
+const ENDPOINT = API_URL
+
+
+
+var socket, selectedChatCompare;
+
+// socket = io(ENDPOINT);
 
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -16,9 +28,31 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(false)
   const [newMessage, setNewMessage] = useState()
+  const [socketConnected, setSocketConnected] = useState(false)
+  const [typing, setTyping] = useState(false)
+  const [isTyping, setIsTyping] = useState(false)
+
+  // const defaultOptions = {
+  //   loop: true,
+  //   autoplay: true,
+  //   animationData: animationData,
+  //   rendererSettings: {
+  //     preserveAspectRatio: "xMidYMid slice"
+  //   }
+
+  // }
+
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user)
+    socket.on("connected", () => setSocketConnected(true))
+    socket.on("typing", () => setIsTyping(true))
+    socket.on("stop typing", () => setIsTyping(false))
+  }, [])
 
 
-  const { user, selectedChat, setSelectedChat } = ChatState();
+
+  const { user, selectedChat, setSelectedChat, notification, setNotification } = ChatState();
 
   const toast = useToast()
 
@@ -42,6 +76,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
       setMessages(data)
       setLoading(false)
+
+      socket.emit("join chat", selectedChat._id)
       console.log("All Messages", messages);
     } catch (error) {
       toast({
@@ -57,10 +93,32 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   useEffect(() => {
     fetchMessages()
+
+    selectedChatCompare = selectedChat;
+
+
   }, [selectedChat])
+
+
+
+  useEffect(() => {
+    socket.on("message recieved", (newMessageRecieved) => {
+      if (!selectedChatCompare || selectedChatCompare._id !== newMessageRecieved.chat._id) {
+        // give notification
+        if (!notification.includes(newMessageRecieved)) {
+          setNotification([newMessageRecieved, ...notification])
+          setFetchAgain(!fetchAgain)
+        }
+      } else {
+        setMessages([...messages, newMessageRecieved])
+      }
+    })
+  })
+
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
+      socket.emit("stop typing", selectedChat._id)
       try {
         const config = {
           headers: {
@@ -77,6 +135,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         console.log(data);
 
         setNewMessage("")
+
+        socket.emit("new message", data)
         setMessages([...messages, data])
 
       } catch (error) {
@@ -92,8 +152,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   }
 
-  const sendMessageButton = async () => {
 
+
+  const sendMessageButton = async () => {
+    socket.emit("stop typing", selectedChat._id)
     try {
       const config = {
         headers: {
@@ -110,6 +172,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       console.log(data);
 
       setNewMessage("")
+      socket.emit("new message", data)
       setMessages([...messages, data])
 
     } catch (error) {
@@ -130,7 +193,26 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const typingHandler = (event) => {
     setNewMessage(event.target.value)
-    // Typing Indicator Logic
+    if (!socketConnected) return;
+
+    if (!typing) {
+      setTyping(true)
+      socket.emit("typing", selectedChat._id)
+    }
+
+    let lastTypingTime = new Date().getTime()
+    let timeLength = 3000
+
+    setTimeout(() => {
+      let timeNow = new Date().getTime()
+      let timerDiff = timeNow - lastTypingTime
+
+      if (timerDiff >= timeLength && typing) {
+        socket.emit("stop typing", selectedChat._id)
+        setTyping(false)
+      }
+    }, timeLength)
+
   }
 
   return (
@@ -201,6 +283,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               )
             }
             <FormControl onKeyDown={sendMessage} isRequired marginTop={3}>
+              {isTyping ? <div>Typing...</div> : <></>}
               <InputGroup>
 
                 <Input

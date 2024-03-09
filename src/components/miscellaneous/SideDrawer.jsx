@@ -28,6 +28,9 @@ import axios from "axios";
 import { API_URL } from "../../API_CALL/api-url";
 import ChatLoading from "../chat/ChatLoading";
 import UserListItem from "../chat/UserListItem";
+import { getSender } from "../../config/ChatLogics";
+import NotificationBadge from "react-notification-badge/lib/components/NotificationBadge";
+import { Effect } from "react-notification-badge";
 
 const SideDrawer = () => {
   const [search, setSearch] = useState("");
@@ -39,7 +42,7 @@ const SideDrawer = () => {
 
   const navigate = useNavigate();
 
-  const { user, setSelectedChat, chats, setChats } = ChatState();
+  const { user, setSelectedChat, chats, setChats, notification, setNotification } = ChatState();
 
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
@@ -147,9 +150,20 @@ const SideDrawer = () => {
         <div>
           <Menu>
             <MenuButton p={1}>
+              <NotificationBadge count={notification.length} effect={Effect.SCALE} />
               <BellIcon fontSize='2xl' m={1} />
             </MenuButton>
-            {/* <MenuList></MenuList> */}
+            <MenuList paddingLeft={2}>
+              {!notification.length && "No New Messages"}
+              {notification.map(notify => (
+                <MenuItem key={notify._id} onClick={() => {
+                  setSelectedChat(notify.chat)
+                  setNotification(notification.filter((n) => n !== notify))
+                }}>
+                  {notify.isGroupChat ? `New Message in ${notify.chat.chatName}` : `New Message from ${getSender(user, notify.chat.users)}`}
+                </MenuItem>
+              ))}
+            </MenuList>
           </Menu>
 
           <Menu>
