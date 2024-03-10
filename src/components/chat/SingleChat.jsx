@@ -57,7 +57,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const toast = useToast()
 
 
-  console.log(selectedChat);
+  // console.log(selectedChat);
 
   const fetchMessages = async () => {
     if (!selectedChat) {
@@ -66,7 +66,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     try {
       const config = {
         headers: {
-          Authorization: `Bearer ${user.token}`
+          Authorization: `Bearer ${user.token}`,
+          "Access-Control-Allow-Origin": "*"
         }
       }
 
@@ -78,7 +79,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       setLoading(false)
 
       socket.emit("join chat", selectedChat._id)
-      console.log("All Messages", messages);
+      // console.log("All Messages", messages);
     } catch (error) {
       toast({
         title: "Error Occured",
@@ -123,7 +124,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         const config = {
           headers: {
             "Content-type": "application/json",
-            Authorization: `Bearer ${user.token}`
+            Authorization: `Bearer ${user.token}`,
+            "Access-Control-Allow-Origin": "*"
           }
         }
 
@@ -132,7 +134,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           chatId: selectedChat._id
         }, config)
 
-        console.log(data);
+        // console.log(data);
 
         setNewMessage("")
 
@@ -160,7 +162,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       const config = {
         headers: {
           "Content-type": "application/json",
-          Authorization: `Bearer ${user.token}`
+          Authorization: `Bearer ${user.token}`,
+          "Access-Control-Allow-Origin": "*"
         }
       }
 
@@ -169,7 +172,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         chatId: selectedChat._id
       }, config)
 
-      console.log(data);
+      // console.log(data);
 
       setNewMessage("")
       socket.emit("new message", data)

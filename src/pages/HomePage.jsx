@@ -15,13 +15,13 @@ const HomePage = () => {
 
         let userInfo
         if (!localStorage.getItem("userInfo")) {
-            console.log("No Items");
-            console.log(localStorage.getItem("userInfo"));
+            // console.log("No Items");
+            // console.log(localStorage.getItem("userInfo"));
             return
         }
 
         userInfo = JSON.parse(localStorage.getItem("userInfo"));
-        console.log(userInfo);
+        // console.log(userInfo);
 
 
 
@@ -45,7 +45,7 @@ const HomePage = () => {
                     borderRadius="lg"
                     borderWidth="1px"
                 >
-                    <Text fontSize="4xl" fontFamily="Work sans" color="black">Mano-Chat-Live</Text>
+                    <Text fontSize="4xl" fontFamily="Work sans" color="black">It's Our Talk</Text>
                 </Box>
 
                 <Box bg="white" w="100%" p={4} borderRadius="lg" borderWidth="1px" color="black">

@@ -46,10 +46,10 @@ const Signup = () => {
             }).then((res) => res.json()).then((data) => {
                 // console.log(data);
                 setPicture(data.url.toString());
-                console.log(data.url.toString());
+                // console.log(data.url.toString());
                 setLoading(false)
             }).catch((err) => {
-                console.log(err);
+                // console.log(err);
                 setLoading(false)
             })
         } else {
@@ -96,7 +96,7 @@ const Signup = () => {
                 },
             }
             const { data } = await axios.post(API_URL + "/api/user", { name, email, password, pic: picture }, config)
-            console.log(data);
+            // console.log(data);
 
 
             toast({
